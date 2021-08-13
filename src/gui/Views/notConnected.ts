@@ -1,4 +1,4 @@
-import {LitElement, html, css} from 'lit-element';
+import {LitElement, html, css} from 'lit';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import {connect} from '#services/eth';
 import Button from '../components/button';

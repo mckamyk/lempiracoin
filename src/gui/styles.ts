@@ -1,10 +1,11 @@
-import {css} from 'lit-element';
+import {css} from 'lit';
 
 export const colors = css`
   :host {
     --bg: #222;
     --white: #eee;
     --accent: #3374ea;
+		--low: #404040;
   }
 `;
 

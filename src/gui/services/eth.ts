@@ -7,9 +7,9 @@ declare const window: Window & typeof globalThis & {
   ethereum: any;
 };
 
-let provider: providers.Web3Provider;
-let signer: providers.JsonRpcSigner;
-let contract: LempiraCoin;
+export let provider: providers.Web3Provider;
+export let signer: providers.JsonRpcSigner;
+export let contract: LempiraCoin;
 
 export const connected = new Subject<boolean>();
 

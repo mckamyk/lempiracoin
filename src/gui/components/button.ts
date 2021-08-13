@@ -1,4 +1,4 @@
-import {LitElement, html, css} from 'lit-element';
+import {LitElement, html, css} from 'lit';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import {colors, fonts} from '../styles';
 
@@ -15,18 +15,16 @@ export default class Button extends scope(LitElement) {
 		return html`
       <div class="button" part="button" @click=${this.clicked}>
         <span class="text"><slot></slot></span>
-      </div>
+			</div>
     `;
 	}
 
   static styles = [colors, fonts, css`
     .button {
+			display: inline-block;
       background: var(--accent);
       padding: .5rem;
       cursor: pointer;
-    }
-    .text {
-
     }
   `];
 }

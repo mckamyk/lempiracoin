@@ -1,27 +1,35 @@
-import {LitElement, html, css, property, customElement} from 'lit-element';
+import {LitElement, html, css} from 'lit';
+import {property, customElement} from 'lit/decorators.js';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
-import {connected} from '#services/eth';
 import NotConnected from './Views/notConnected';
 import {colors, fonts} from './styles';
+import {isConnected} from '#services/eth';
+import Dashboard from './Views/Dashboard';
+
+declare const window: Window & typeof globalThis & {
+  ethereum: any;
+};
 
 @customElement('root-el')
 export default class RootElement extends scope(LitElement) {
 	@property({attribute: false}) connected = false;
 
 	connectedCallback() {
-		connected.subscribe({
-			next: c => {
-				this.connected = c;
-				this.requestUpdate();
-			},
+		window.ethereum.on('accountsChanged', (accounts: any) => {
+			if (accounts.length) {
+				this.connected = true;
+			} else {
+				this.connected = false;
+			}
 		});
+		isConnected().then(con => this.connected = con);
 		super.connectedCallback();
 	}
 
 	render() {
 		return html`
 			<div class="wrapper">
-				${this.connected ? html`connected` : html`<not-connected></not-connected>`}
+				${this.connected ? html`<dashboard-el></dashboard-el>` : html`<not-connected></not-connected>`}
 			</div>
 		`;
 	}
@@ -37,6 +45,7 @@ export default class RootElement extends scope(LitElement) {
 	static get scopedElements() {
 		return {
 			'not-connected': NotConnected,
+			'dashboard-el': Dashboard,
 		};
 	}
 }
