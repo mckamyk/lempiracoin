@@ -25,7 +25,9 @@ const config: Config = {
 	resolve: {
 		extensions: ['.ts', '.js', '.json'],
 		alias: {
-			'#components': path.resolve(__dirname, 'gui/components'),
+			'#components': path.resolve(__dirname, './src/gui/components'),
+			'#services': path.resolve(__dirname, './src/gui/services'),
+			'#artifacts': path.resolve(__dirname, './artifacts'),
 		},
 	},
 
