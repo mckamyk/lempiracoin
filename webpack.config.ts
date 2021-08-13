@@ -23,7 +23,7 @@ const config: Config = {
 	},
 
 	resolve: {
-		extensions: ['.ts', '.js'],
+		extensions: ['.ts', '.js', '.json'],
 		alias: {
 			'#components': path.resolve(__dirname, 'gui/components'),
 		},

@@ -6,6 +6,8 @@ import 'hardhat-watcher';
 import * as fs from 'fs';
 import * as path from 'path';
 
+export const walletAddress = '0xAB82910FE0a55E4Aa680DBc08bae45113566c309';
+
 task('dev', 'Main Development Task', async (args, hre) => {
 	const watchProm = hre.run('watch', {watcherTask: 'rebuild'});
 
@@ -19,7 +21,6 @@ task('dev', 'Main Development Task', async (args, hre) => {
 task('init', 'Initialized the contract state, and updates address reference', async (args, hre: HardhatRuntimeEnvironment) => {
 	const {ethers} = hre;
 
-	const walletAddress = '0xAB82910FE0a55E4Aa680DBc08bae45113566c309';
 	hre.network.provider.request({
 		method: 'hardhat_impersonateAccount',
 		params: [walletAddress],
