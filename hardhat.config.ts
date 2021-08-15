@@ -55,6 +55,7 @@ const config: HardhatUserConfig = {
 			logging: {
 				omitMethods: ['eth_chainId', 'eth_blockNumber', 'eth_getFilterChanges'],
 			},
+			initialBaseFeePerGas: 0,
 		},
 	},
 	watcher: {

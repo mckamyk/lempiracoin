@@ -19,5 +19,11 @@ describe('Token Contract', function () {
 		const supply = await contract.totalSupply();
 		expect(supply.eq(0)).to.eq(true);
 	});
+	it('Can Mint', async () => {
+		const bal = await contract.totalSupply();
+		await contract.mint(await signer.getAddress(), 1000);
+		const after = await contract.totalSupply();
+		expect(bal.toNumber()).lessThan(after.toNumber());
+	});
 });
 

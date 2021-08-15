@@ -10,15 +10,19 @@ export default class Card extends scope(LitElement) {
 	render() {
 		return html`
 			<div class="wrapper" part="wrapper">
-				<div class="header" part="header">
-					<slot name="header"></slot>
-				</div>
+				${this.header ? html`
+					<div class="header" part="header">
+						<slot name="header"></slot>
+					</div>
+				` : ''}
 				<div class="body" part="body">
 					<slot></slot>
 				</div>
-				<div class="footer" part="footer">
-					<slot name="footer"></slot>
-				</div>
+				${this.footer ? html`
+					<div class="footer" part="footer">
+						<slot name="footer"></slot>
+					</div>
+				` : ''}
 			</div>
 		`;
 	}
@@ -35,6 +39,7 @@ export default class Card extends scope(LitElement) {
 		}
 		.body {
 			flex-grow: 1;
+			padding: 10px 0;
 		}
 		.header {
 			border-bottom: 1px solid white;
