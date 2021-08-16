@@ -33,3 +33,23 @@ export const watchTotalSupply = () => {
 	});
 	return supply;
 };
+
+export const isOwner = async () => {
+	try {
+		await contract.isOwner();
+		return true;
+	} catch {
+		return false;
+	}
+};
+
+export const isManager = async () => {
+	try {
+		await contract.isManager();
+		return true;
+	} catch {
+		return false;
+	}
+};
+
+export const getManagers = async () => contract.getManagers();
