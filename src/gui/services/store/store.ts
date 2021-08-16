@@ -1,7 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit';
+import managerReducer from './managersSlice';
 
 export const store = configureStore({
-	reducer: {},
+	reducer: {
+		managers: managerReducer,
+	},
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -5131,7 +5131,7 @@ hardhat-watcher@^2.1.1:
 
 "hardhat@file:../hardhat-v2.6.0.tgz":
   version "2.6.0"
-  resolved "file:../hardhat-v2.6.0.tgz#cbbe61d5def93b1473dfc476483c3fee12883af1"
+  resolved "file:../hardhat-v2.6.0.tgz#eac4341a9136f39ce6e0fd13064e58278d4156ba"
   dependencies:
     "@ethereumjs/block" "^3.4.0"
     "@ethereumjs/blockchain" "^5.4.0"
