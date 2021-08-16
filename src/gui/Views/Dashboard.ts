@@ -5,6 +5,7 @@ import {colors, fonts} from '../styles';
 import {BigNumber} from 'ethers';
 import {isOwner, isManager} from '../services/lempira';
 import ManagerView from './Manager/ManagerView';
+import OwnerView from './Owner/OwnerView';
 
 export default class Dashboard extends scope(LitElement) {
 	@state() private totalSupply?: BigNumber;
@@ -20,16 +21,30 @@ export default class Dashboard extends scope(LitElement) {
 
 	render() {
 		return html`
+		<div class="wrapper">
+			${this.isOwner ? html`<owner-view></owner-view>` : ''}
 			${this.isManager ? html`<manager-view></manager-view>` : ''}
+		</div>
 		`;
 	}
 
 	static styles = [colors, fonts, css`
+		.wrapper {
+			height: 100%;
+			display: flex;
+			flex-flow: column nowrap;
+			align-items: center;
+			justify-content: center;
+		}
+		.wrapper > *:not(:last-child) {
+			margin-bottom: 5rem;
+		}
 	`];
 
 	static get scopedElements() {
 		return {
 			'manager-view': ManagerView,
+			'owner-view': OwnerView,
 		};
 	}
 }

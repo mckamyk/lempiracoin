@@ -5,6 +5,7 @@ import 'hardhat-typechain';
 import 'hardhat-watcher';
 import * as fs from 'fs';
 import * as path from 'path';
+import {LempiraCoin} from './src/types';
 
 export const walletAddress = '0xAB82910FE0a55E4Aa680DBc08bae45113566c309';
 
@@ -27,6 +28,7 @@ task('init', 'Initialized the contract state, and updates address reference', as
 	});
 
 	const signer = ethers.provider.getSigner(walletAddress);
+	const [manager] = await ethers.getSigners();
 	const balance = await signer.getBalance();
 	console.log(`Main Wallet: ${ethers.utils.formatEther(balance)}`);
 	if (balance.lt(ethers.utils.parseEther('100'))) {
@@ -38,7 +40,9 @@ task('init', 'Initialized the contract state, and updates address reference', as
 	}
 
 	const lempiraFactory = await ethers.getContractFactory('LempiraCoin', signer);
-	const lempira = await lempiraFactory.deploy();
+	const lempira = await lempiraFactory.deploy() as LempiraCoin;
+
+	await lempira.promote(await manager.getAddress(), 'manager1');
 
 	const out = {address: lempira.address};
 	fs.writeFileSync(path.join(__dirname, 'src', 'address.json'), JSON.stringify(out));

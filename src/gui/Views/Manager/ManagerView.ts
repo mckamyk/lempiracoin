@@ -85,7 +85,6 @@ export default class ManagerView extends scope(LitElement) {
 
 	static styles = [colors, fonts, css`
 		.wrapper {
-			height: 100%;
 			display: flex;
 			flex-flow: column nowrap;
 			align-items: center;

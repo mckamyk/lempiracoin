@@ -3,13 +3,14 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-struct Manager {
-	address addr;
-	string name;
-	bool manager;
-}
 
 contract LempiraCoin is ERC20 {
+	struct Manager {
+		address addr;
+		string name;
+		bool manager;
+	}
+
 	address owner;
 	Manager[] managers;
 
