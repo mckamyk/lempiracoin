@@ -11,6 +11,7 @@ contract LempiraCoin is ERC20 {
 		bool manager;
 	}
 
+
 	address owner;
 	Manager[] managers;
 

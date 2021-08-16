@@ -1,11 +1,11 @@
 import {task, HardhatUserConfig} from 'hardhat/config';
 import {HardhatRuntimeEnvironment} from 'hardhat/types';
 import '@nomiclabs/hardhat-waffle';
-import 'hardhat-typechain';
+import '@nomiclabs/hardhat-ethers';
+import '@typechain/hardhat';
 import 'hardhat-watcher';
 import * as fs from 'fs';
 import * as path from 'path';
-import {LempiraCoin} from './src/types';
 
 export const walletAddress = '0xAB82910FE0a55E4Aa680DBc08bae45113566c309';
 
@@ -40,7 +40,7 @@ task('init', 'Initialized the contract state, and updates address reference', as
 	}
 
 	const lempiraFactory = await ethers.getContractFactory('LempiraCoin', signer);
-	const lempira = await lempiraFactory.deploy() as LempiraCoin;
+	const lempira = await lempiraFactory.deploy();
 
 	await lempira.promote(await manager.getAddress(), 'manager1');
 
@@ -69,6 +69,7 @@ const config: HardhatUserConfig = {
 	},
 	typechain: {
 		outDir: './src/types',
+		target: 'ethers-v5',
 	},
 	paths: {
 		sources: './src/contracts',
