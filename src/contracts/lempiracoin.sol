@@ -12,6 +12,7 @@ contract LempiraCoin is ERC20 {
 	}
 
 	event ManagersUpdated(Manager[]);
+	event SupplyChange(uint);
 
 	address owner;
 	Manager[] managers;
@@ -20,7 +21,7 @@ contract LempiraCoin is ERC20 {
 		owner = msg.sender;
   }
 
-	function promote(address promotee, string calldata name) public hasOwner {
+	function promote(address promotee, string calldata name) public onlyOwner {
 		bool found = false;
 		for (uint i = 0; i < managers.length; i++) {
 			if (promotee == managers[i].addr) {
@@ -36,7 +37,7 @@ contract LempiraCoin is ERC20 {
 		emit ManagersUpdated(managers);
 	}
 
-	function demote(address demotee) public hasOwner {
+	function demote(address demotee) public onlyOwner {
 		bool found = false;
 		uint index = 0;
 		for (uint i = 0; i < managers.length; i++) {
@@ -55,26 +56,22 @@ contract LempiraCoin is ERC20 {
 		emit ManagersUpdated(managers);
 	}
 
-	function getManagers() public hasOwner view returns(Manager[] memory) {
+	function getManagers() public view returns(Manager[] memory) {
 		return managers;
 	}
 
-  function deposit(address account, uint256 amount) public hasManager {
+  function deposit(address account, uint256 amount) public onlyManager {
     _mint(account, amount);
+		emit SupplyChange(totalSupply());
   }
 
-	function withdraw(address account, uint256 amount) public hasManager {
+	function withdraw(address account, uint256 amount) public onlyManager {
 		_burn(account, amount);
+		emit SupplyChange(totalSupply());
 	}
 
-	function isManager() public view hasManager {
-	}
-
-	function isOwner() public view hasOwner {
-	}
-
-	modifier hasManager {
-		bool isOwnr = msg.sender == owner;
+	function isManager() public view returns (bool) {
+		if (msg.sender == owner) return true;
 
 		bool isMgr = false;
 		for (uint i = 0; i < managers.length; i++) {
@@ -84,12 +81,20 @@ contract LempiraCoin is ERC20 {
 			}
 		}
 
-		require(isMgr || isOwnr, "Must be at least manager to do that.");
+		return isMgr;
+	}
+
+	function isOwner() public view returns (bool) {
+		return msg.sender == owner;
+	}
+
+	modifier onlyManager {
+		require(isManager(), "Must be at least manager to do that.");
 		_;
 	}
 
-	modifier hasOwner {
-		require (msg.sender == owner, "Must be owner to do that.");
+	modifier onlyOwner {
+		require(isOwner(), "Must be owner to do that.");
 		_;
 	}
 }

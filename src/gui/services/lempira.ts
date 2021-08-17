@@ -1,9 +1,9 @@
 // @ts-ignore
 import lempira from '#artifacts/src/contracts/lempiracoin.sol/LempiraCoin.json';
-import {ethers} from 'ethers';
+import {BigNumber, ethers} from 'ethers';
 // @ts-ignore
 import addr from '../../address';
-import {setTotalSupply, setManagers} from './redux/lempiraSlice';
+import {setTotalSupply, setManagers, setIsManager, setIsOwner, setBalance} from './redux/lempiraSlice';
 import {store} from './redux/store';
 
 export const {abi} = lempira;
@@ -22,6 +22,11 @@ export const withdraw = async (amount:string, address: string) => {
 	contract.withdraw(address, amt);
 };
 
+const getBalance = async () => {
+	const account = store.getState().eth.accounts[0];
+	return contract.balanceOf(account);
+};
+
 const getTotalSupply = async () => {
 	const sup = await contract.totalSupply();
 	store.dispatch(setTotalSupply(sup.toHexString()));
@@ -33,40 +38,61 @@ const getManagers = async () => {
 };
 
 const watchTotalSupply = () => {
+	const watchers = contract.listeners('SupplyChange');
+	if (watchers.length) {
+		return;
+	}
+
+	contract.on('SupplyChange', async (supply: BigNumber) => {
+		store.dispatch(setTotalSupply(supply.toHexString()));
+	});
+};
+
+const watchManagers = () => {
+	const watchers = contract.listeners('ManagersUpdated');
+	if (watchers.length) {
+		return;
+	}
+
+	contract.on('ManagersUpdated', (managers: Manager[]) => {
+		store.dispatch(setManagers(managers));
+	});
+};
+
+const watchBalance = () => {
+	const watchers = contract.listeners('Transfer');
+	if (watchers.length) {
+		contract.off('Transfer', watchers[0]);
+	}
+
 	contract.on('Transfer', async (from: string, to: string) => {
-		const zero = '0x0000000000000000000000000000000000000000';
-		if (from === zero || to === zero) {
-			const sup = await contract.totalSupply();
-			store.dispatch(setTotalSupply(sup.toHexString()));
+		const wallet = store.getState().eth.accounts[0].toLowerCase();
+		const addresses = [from.toLowerCase(), to.toLowerCase()];
+		if (addresses.includes(wallet)) {
+			const balance = await getBalance();
+			store.dispatch(setBalance(balance.toHexString()));
 		}
 	});
 };
 
-const watchManagers = () => contract.on('ManagersUpdated', (managers: Manager[]) => {
-	store.dispatch(setManagers(managers));
-});
-
-export const watch = () => {
+export const watch = async () => {
 	getTotalSupply();
 	getManagers();
+	const balance = await getBalance();
+	store.dispatch(setBalance(balance.toHexString()));
 	watchManagers();
 	watchTotalSupply();
+	watchBalance();
 };
 
-export const isOwner = async () => {
-	try {
-		await contract.isOwner();
-		return true;
-	} catch {
-		return false;
-	}
+export const refreshPermissions = async () => {
+	const owner = await isOwner();
+	const mgr = await isManager();
+
+	store.dispatch(setIsManager(mgr));
+	store.dispatch(setIsOwner(owner));
 };
 
-export const isManager = async () => {
-	try {
-		await contract.isManager();
-		return true;
-	} catch {
-		return false;
-	}
-};
+export const isOwner = async () => contract.isOwner();
+
+export const isManager = async () => contract.isManager();

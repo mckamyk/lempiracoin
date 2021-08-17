@@ -1,6 +1,6 @@
 import {ethers, providers} from 'ethers';
 import {LempiraCoin} from '../../types';
-import {abi, address} from './lempira';
+import {abi, address, refreshPermissions} from './lempira';
 import {setAccounts} from './redux/ethSlice';
 import {store} from './redux/store';
 import {watch} from './lempira';
@@ -27,10 +27,11 @@ export const connect = async () => {
 const setupAccounts = (accounts: string[]) => {
 	store.dispatch(setAccounts(accounts));
 	if (accounts.length) {
-		provider = new ethers.providers.Web3Provider(window.ethereum);
-		signer = provider.getSigner();
-		contract = new ethers.Contract(address, abi, signer) as LempiraCoin;
+		provider = provider || new ethers.providers.Web3Provider(window.ethereum);
+		signer = signer || provider.getSigner();
+		contract = contract || new ethers.Contract(address, abi, signer) as LempiraCoin;
 		watch();
+		refreshPermissions();
 	}
 };
 

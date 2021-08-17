@@ -2,18 +2,19 @@ import {LitElement, html, css} from 'lit';
 import {state} from 'lit/decorators.js';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import {colors, fonts} from '../styles';
-import {isOwner, isManager} from '../services/lempira';
 import ManagerView from './Manager/ManagerView';
 import OwnerView from './Owner/OwnerView';
+import {connect} from 'pwa-helpers';
+import {store, RootState} from '../services/redux/store';
+import CustomerView from './Customer/customerView';
 
-export default class Dashboard extends scope(LitElement) {
+export default class Dashboard extends connect(store)(scope(LitElement)) {
 	@state() private isOwner = false;
 	@state() private isManager = false;
 
-	constructor() {
-		super();
-		isOwner().then(owner => this.isOwner = owner);
-		isManager().then(manager => this.isManager = manager);
+	stateChanged(store: RootState) {
+		this.isOwner = store.lempira.isOwner;
+		this.isManager = store.lempira.isManager;
 	}
 
 	render() {
@@ -21,6 +22,7 @@ export default class Dashboard extends scope(LitElement) {
 		<div class="wrapper">
 			${this.isOwner ? html`<owner-view></owner-view>` : ''}
 			${this.isManager ? html`<manager-view></manager-view>` : ''}
+			<customer-view></customer-view>
 		</div>
 		`;
 	}
@@ -42,6 +44,7 @@ export default class Dashboard extends scope(LitElement) {
 		return {
 			'manager-view': ManagerView,
 			'owner-view': OwnerView,
+			'customer-view': CustomerView,
 		};
 	}
 }

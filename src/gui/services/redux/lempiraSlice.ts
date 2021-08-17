@@ -7,6 +7,7 @@ interface LempiraState {
 	totalSupply: string;
 	isOwner: boolean;
 	isManager: boolean;
+	balance: string;
 }
 
 const lempiraState: LempiraState = {
@@ -14,6 +15,7 @@ const lempiraState: LempiraState = {
 	totalSupply: BigNumber.from(0).toHexString(),
 	isOwner: false,
 	isManager: false,
+	balance: BigNumber.from(0).toHexString(),
 };
 
 export const managersSlice = createSlice({
@@ -32,8 +34,11 @@ export const managersSlice = createSlice({
 		setIsManager: (state, action: PayloadAction<boolean>) => {
 			state.isManager = action.payload;
 		},
+		setBalance: (state, action: PayloadAction<string>) => {
+			state.balance = action.payload;
+		},
 	},
 });
 
-export const {setManagers, setTotalSupply, setIsOwner, setIsManager} = managersSlice.actions;
+export const {setManagers, setTotalSupply, setIsOwner, setIsManager, setBalance} = managersSlice.actions;
 export default managersSlice.reducer;

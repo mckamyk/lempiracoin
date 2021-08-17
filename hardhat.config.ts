@@ -7,7 +7,8 @@ import 'hardhat-watcher';
 import * as fs from 'fs';
 import * as path from 'path';
 
-export const walletAddress = '0xAB82910FE0a55E4Aa680DBc08bae45113566c309';
+export const ownerAddress = '0xAB82910FE0a55E4Aa680DBc08bae45113566c309';
+export const managerAddress = '0x1D7607a314BeD674BBd99B46469005f8Baead6cD';
 
 task('dev', 'Main Development Task', async (args, hre) => {
 	const watchProm = hre.run('watch', {watcherTask: 'rebuild'});
@@ -24,25 +25,23 @@ task('init', 'Initialized the contract state, and updates address reference', as
 
 	hre.network.provider.request({
 		method: 'hardhat_impersonateAccount',
-		params: [walletAddress],
+		params: [ownerAddress],
 	});
 
-	const signer = ethers.provider.getSigner(walletAddress);
-	const [manager] = await ethers.getSigners();
+	const signer = ethers.provider.getSigner(ownerAddress);
 	const balance = await signer.getBalance();
-	console.log(`Main Wallet: ${ethers.utils.formatEther(balance)}`);
 	if (balance.lt(ethers.utils.parseEther('100'))) {
 		const internalAccounts = await ethers.getSigners();
 		const internalBalance = await internalAccounts[0].getBalance();
 		if (internalBalance.gte(ethers.utils.parseEther('100'))) {
-			await internalAccounts[0].sendTransaction({to: walletAddress, value: ethers.utils.parseEther('100')});
+			await internalAccounts[0].sendTransaction({to: ownerAddress, value: ethers.utils.parseEther('100')});
 		}
 	}
 
 	const lempiraFactory = await ethers.getContractFactory('LempiraCoin', signer);
 	const lempira = await lempiraFactory.deploy();
 
-	await lempira.promote(await manager.getAddress(), 'manager1');
+	await lempira.promote(managerAddress, 'manager1');
 
 	const out = {address: lempira.address};
 	fs.writeFileSync(path.join(__dirname, 'src', 'address.json'), JSON.stringify(out));
