@@ -3,27 +3,16 @@ import {property, customElement} from 'lit/decorators.js';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import NotConnected from './Views/notConnected';
 import {colors, fonts} from './styles';
-import {isConnected} from '#services/eth';
 import Dashboard from './Views/Dashboard';
-
-declare const window: Window & typeof globalThis & {
-  ethereum: any;
-};
+import {connect} from 'pwa-helpers';
+import {RootState, store} from '#services/redux/store';
 
 @customElement('root-el')
-export default class RootElement extends scope(LitElement) {
+export default class RootElement extends connect(store)(scope(LitElement)) {
 	@property({attribute: false}) connected = false;
 
-	connectedCallback() {
-		window.ethereum.on('accountsChanged', (accounts: any) => {
-			if (accounts.length) {
-				this.connected = true;
-			} else {
-				this.connected = false;
-			}
-		});
-		isConnected().then(con => this.connected = con);
-		super.connectedCallback();
+	stateChanged(state: RootState) {
+		this.connected = state.eth.connected;
 	}
 
 	render() {

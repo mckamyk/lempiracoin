@@ -1,5 +1,5 @@
 export interface Manager {
   name: string;
-  address: string;
+  addr: string;
   enabled: boolean;
 }

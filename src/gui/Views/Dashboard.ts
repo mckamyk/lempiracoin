@@ -2,14 +2,11 @@ import {LitElement, html, css} from 'lit';
 import {state} from 'lit/decorators.js';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import {colors, fonts} from '../styles';
-import {BigNumber} from 'ethers';
 import {isOwner, isManager} from '../services/lempira';
 import ManagerView from './Manager/ManagerView';
 import OwnerView from './Owner/OwnerView';
 
 export default class Dashboard extends scope(LitElement) {
-	@state() private totalSupply?: BigNumber;
-
 	@state() private isOwner = false;
 	@state() private isManager = false;
 

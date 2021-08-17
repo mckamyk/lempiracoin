@@ -1,16 +1,16 @@
 // @ts-ignore
 import lempira from '#artifacts/src/contracts/lempiracoin.sol/LempiraCoin.json';
-import {BigNumber, ethers} from 'ethers';
-import {Subject} from 'rxjs';
+import {ethers} from 'ethers';
 // @ts-ignore
 import addr from '../../address';
+import {setTotalSupply, setManagers} from './redux/lempiraSlice';
+import {store} from './redux/store';
 
 export const {abi} = lempira;
 export const {address} = addr;
 
 import {contract} from './eth';
-
-export const getTotalSupply = async (): Promise<BigNumber> => contract.totalSupply();
+import {Manager} from '../../managerType';
 
 export const deposit = async (amount: string, address: string) => {
 	const amt = ethers.utils.parseEther(amount);
@@ -22,16 +22,35 @@ export const withdraw = async (amount:string, address: string) => {
 	contract.withdraw(address, amt);
 };
 
-export const watchTotalSupply = () => {
-	const supply = new Subject<BigNumber>();
+const getTotalSupply = async () => {
+	const sup = await contract.totalSupply();
+	store.dispatch(setTotalSupply(sup.toHexString()));
+};
+
+const getManagers = async () => {
+	const managers = await contract.getManagers();
+	store.dispatch(setManagers(managers));
+};
+
+const watchTotalSupply = () => {
 	contract.on('Transfer', async (from: string, to: string) => {
 		const zero = '0x0000000000000000000000000000000000000000';
 		if (from === zero || to === zero) {
-			const sup = await getTotalSupply();
-			supply.next(sup);
+			const sup = await contract.totalSupply();
+			store.dispatch(setTotalSupply(sup.toHexString()));
 		}
 	});
-	return supply;
+};
+
+const watchManagers = () => contract.on('ManagersUpdated', (managers: Manager[]) => {
+	store.dispatch(setManagers(managers));
+});
+
+export const watch = () => {
+	getTotalSupply();
+	getManagers();
+	watchManagers();
+	watchTotalSupply();
 };
 
 export const isOwner = async () => {
@@ -51,5 +70,3 @@ export const isManager = async () => {
 		return false;
 	}
 };
-
-export const getManagers = async () => contract.getManagers();

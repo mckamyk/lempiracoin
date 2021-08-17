@@ -4,36 +4,23 @@ import {ifDefined} from 'lit/directives/if-defined';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import {colors, fonts} from '../../styles';
 import {BigNumber, ethers} from 'ethers';
-import {deposit, withdraw, getTotalSupply, watchTotalSupply, isOwner, isManager} from '#services/lempira';
+import {deposit, withdraw} from '#services/lempira';
 import Button from '#components/button';
 import Card from '#components/card';
 import TextField from '#components/textfield';
-import {Subject} from 'rxjs';
+import {connect} from 'pwa-helpers';
+import {store, RootState} from '#services/redux/store';
 
-export default class ManagerView extends scope(LitElement) {
+export default class ManagerView extends connect(store)(scope(LitElement)) {
 	@state() private totalSupply?: BigNumber;
-	@state() private supplySubject: Subject<BigNumber> = watchTotalSupply();
-
-	@state() private isOwner = false;
-	@state() private isManager = false;
 
 	@state() private depositAmount: string = '';
 	@state() private depositAddress: string = '';
 	@state() private withdrawAmount: string = '';
 	@state() private withdrawAddress: string = '';
 
-	constructor() {
-		super();
-		this.getTotalSupply();
-		this.supplySubject.subscribe({
-			next: amount => this.totalSupply = amount,
-		});
-		isOwner().then(owner => this.isOwner = owner);
-		isManager().then(manager => this.isManager = manager);
-	}
-
-	async getTotalSupply() {
-		this.totalSupply = await getTotalSupply();
+	stateChanged(state: RootState) {
+		this.totalSupply = BigNumber.from(state.lempira.totalSupply);
 	}
 
 	deposit() {

@@ -1,23 +1,18 @@
 import {LitElement, html, css} from 'lit';
 import {state} from 'lit/decorators.js';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
-import {getManagers} from '../../services/lempira';
 import Card from '../../components/card';
 import TextField from '../../components/textfield';
 import Button from '../../components/button';
+import {connect} from 'pwa-helpers';
+import {store, RootState} from '#services/redux/store';
+import {Manager} from '../../../managerType';
 
-interface Manager {
-	name: string;
-	manager: boolean;
-	addr: string;
-}
-
-export default class OwnerView extends scope(LitElement) {
+export default class OwnerView extends connect(store)(scope(LitElement)) {
 	@state() managers: Manager[] = [];
 
-	constructor() {
-		super();
-		getManagers().then(managers => this.managers = managers);
+	stateChanged(store: RootState) {
+		this.managers = store.lempira.managers;
 	}
 
 	renderManager(manager: Manager) {
@@ -30,7 +25,7 @@ export default class OwnerView extends scope(LitElement) {
 					${manager.addr}
 				</div>
 				<div class="enabled">
-					${manager.manager ? 'Active' : 'Inactive'}
+					${manager.enabled ? 'Active' : 'Inactive'}
 				</div>
 			</div>
 		`;

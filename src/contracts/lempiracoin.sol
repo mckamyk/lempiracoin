@@ -8,9 +8,10 @@ contract LempiraCoin is ERC20 {
 	struct Manager {
 		address addr;
 		string name;
-		bool manager;
+		bool enabled;
 	}
 
+	event ManagersUpdated(Manager[]);
 
 	address owner;
 	Manager[] managers;
@@ -23,15 +24,16 @@ contract LempiraCoin is ERC20 {
 		bool found = false;
 		for (uint i = 0; i < managers.length; i++) {
 			if (promotee == managers[i].addr) {
-				managers[i].manager = true;
+				managers[i].enabled = true;
 				found = true;
 				break;
 			}
 		}
 
 		if (!found) {
-			managers.push(Manager({name: name, addr: promotee, manager: true}));
+			managers.push(Manager({name: name, addr: promotee, enabled: true}));
 		}
+		emit ManagersUpdated(managers);
 	}
 
 	function demote(address demotee) public hasOwner {
@@ -39,7 +41,7 @@ contract LempiraCoin is ERC20 {
 		uint index = 0;
 		for (uint i = 0; i < managers.length; i++) {
 			if (managers[i].addr == demotee) {
-				managers[i].manager = false;
+				managers[i].enabled = false;
 				index = i;
 			}
 		}
@@ -50,6 +52,7 @@ contract LempiraCoin is ERC20 {
 			managers[index] = lastManager;
 			managers.pop();
 		}
+		emit ManagersUpdated(managers);
 	}
 
 	function getManagers() public hasOwner view returns(Manager[] memory) {
@@ -76,7 +79,7 @@ contract LempiraCoin is ERC20 {
 		bool isMgr = false;
 		for (uint i = 0; i < managers.length; i++) {
 			if (managers[i].addr == msg.sender) {
-				isMgr = managers[i].manager;
+				isMgr = managers[i].enabled;
 				break;
 			}
 		}
