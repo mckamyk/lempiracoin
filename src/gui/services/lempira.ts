@@ -22,6 +22,18 @@ export const withdraw = async (amount:string, address: string) => {
 	contract.withdraw(address, amt);
 };
 
+export const toggleManager = async (address: string, enable: boolean) => {
+	await contract.toggleManager(address, enable);
+};
+
+export const addManager = async (address: string, name: string) => {
+	await contract.addManager(address, name);
+};
+
+export const removeManager = async (address: string) => {
+	await contract.removeManager(address);
+};
+
 const getBalance = async () => {
 	const account = store.getState().eth.accounts[0];
 	return contract.balanceOf(account);

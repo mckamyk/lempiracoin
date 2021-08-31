@@ -16,7 +16,7 @@ describe('Token Contract', function () {
 	});
 
 	this.beforeEach(async () => {
-		await contract.promote(await manager.getAddress(), 'manager');
+		await contract.addManager(await manager.getAddress(), 'manager');
 	});
 
 	it('Deploys', async function () {
@@ -37,7 +37,7 @@ describe('Token Contract', function () {
 		await contract.isManager();
 
 		// Then Demote him
-		await contract.demote(await manager.getAddress());
+		await contract.removeManager(await manager.getAddress());
 		try {
 			// Make sure this reverts
 			await contract.isManager();
@@ -46,35 +46,35 @@ describe('Token Contract', function () {
 			assert(true);
 		} finally {
 			// Make him manager again
-			await contract.promote(await manager.getAddress(), 'manager1');
+			await contract.addManager(await manager.getAddress(), 'manager1');
 		}
 	});
 
 	it('Restricts promotion/demotion to Owner', async () => {
 		const fails: boolean[] = [];
 		try {
-			await contract.connect(manager).promote(await customer.getAddress(), 'manager1');
+			await contract.connect(manager).addManager(await customer.getAddress(), 'manager1');
 			fails.push(true);
 		} catch {
 
 		}
 
 		try {
-			await contract.connect(customer).promote(await manager.getAddress(), 'manager1');
+			await contract.connect(customer).addManager(await manager.getAddress(), 'manager1');
 			fails.push(true);
 		} catch {
 
 		}
 
 		try {
-			await contract.connect(manager).demote(await customer.getAddress());
+			await contract.connect(manager).removeManager(await customer.getAddress());
 			fails.push(true);
 		} catch {
 
 		}
 
 		try {
-			await contract.connect(customer).demote(await manager.getAddress());
+			await contract.connect(customer).removeManager(await manager.getAddress());
 			fails.push(true);
 		} catch {
 

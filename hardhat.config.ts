@@ -41,7 +41,7 @@ task('init', 'Initialized the contract state, and updates address reference', as
 	const lempiraFactory = await ethers.getContractFactory('LempiraCoin', signer);
 	const lempira = await lempiraFactory.deploy();
 
-	await lempira.promote(managerAddress, 'manager1');
+	await lempira.addManager(managerAddress, 'manager1');
 
 	const out = {address: lempira.address};
 	fs.writeFileSync(path.join(__dirname, 'src', 'address.json'), JSON.stringify(out));

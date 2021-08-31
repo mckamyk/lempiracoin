@@ -14,35 +14,44 @@ contract LempiraCoin is ERC20 {
 	event ManagersUpdated(Manager[]);
 	event SupplyChange(uint);
 
-	address owner;
+	address[] owners;
 	Manager[] managers;
 
   constructor() ERC20("Lempria Coin", "HNLC") {
-		owner = msg.sender;
+		owners.push(msg.sender);
   }
 
-	function promote(address promotee, string calldata name) public onlyOwner {
-		bool found = false;
-		for (uint i = 0; i < managers.length; i++) {
-			if (promotee == managers[i].addr) {
-				managers[i].enabled = true;
-				found = true;
+	function toggleManager(address addr, bool enabled) public onlyOwner {
+		for(uint i; i < managers.length; i++) {
+			if (managers[i].addr == addr) {
+				managers[i].enabled = enabled;
+				emit ManagersUpdated(managers);
 				break;
 			}
 		}
+	}
 
-		if (!found) {
-			managers.push(Manager({name: name, addr: promotee, enabled: true}));
+	function addManager(address addr, string calldata name) public onlyOwner {
+		for (uint i; i < managers.length; i++) {
+			if (managers[i].addr == addr) {
+				revert("This manager already exists. Did you mean to toggle?");
+			}
 		}
+
+		managers.push(Manager({
+			addr: addr, name: name, enabled: true
+		}));
+
 		emit ManagersUpdated(managers);
 	}
 
-	function demote(address demotee) public onlyOwner {
+	function removeManager(address demotee) public onlyOwner {
 		bool found = false;
 		uint index = 0;
+
 		for (uint i = 0; i < managers.length; i++) {
 			if (managers[i].addr == demotee) {
-				managers[i].enabled = false;
+				found = true;
 				index = i;
 			}
 		}
@@ -71,8 +80,6 @@ contract LempiraCoin is ERC20 {
 	}
 
 	function isManager() public view returns (bool) {
-		if (msg.sender == owner) return true;
-
 		bool isMgr = false;
 		for (uint i = 0; i < managers.length; i++) {
 			if (managers[i].addr == msg.sender) {
@@ -85,7 +92,13 @@ contract LempiraCoin is ERC20 {
 	}
 
 	function isOwner() public view returns (bool) {
-		return msg.sender == owner;
+		for (uint i; i < owners.length; i++) {
+			if (owners[i] == msg.sender) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	modifier onlyManager {

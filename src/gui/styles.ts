@@ -5,6 +5,7 @@ export const colors = css`
     --bg: #222;
     --white: #eee;
     --accent: #3374ea;
+    --error: #ea4833;
 		--low: #404040;
   }
 `;
