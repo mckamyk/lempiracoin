@@ -7,10 +7,15 @@ import OwnerView from './Owner/OwnerView';
 import {connect} from 'pwa-helpers';
 import {store, RootState} from '../services/redux/store';
 import CustomerView from './Customer/customerView';
+import FaIcon from '#components/faIcon';
 
 export default class Dashboard extends connect(store)(scope(LitElement)) {
 	@state() private isOwner = false;
 	@state() private isManager = false;
+
+	get showNav(): boolean {
+		return this.isOwner || this.isManager;
+	}
 
 	stateChanged(store: RootState) {
 		this.isOwner = store.lempira.isOwner;
@@ -38,6 +43,12 @@ export default class Dashboard extends connect(store)(scope(LitElement)) {
 		.wrapper > *:not(:last-child) {
 			margin-bottom: 5rem;
 		}
+		.icon {
+			width: 2.5rem;
+		}
+		.nav {
+			justify-self: flex-start;
+		}
 	`];
 
 	static get scopedElements() {
@@ -45,6 +56,7 @@ export default class Dashboard extends connect(store)(scope(LitElement)) {
 			'manager-view': ManagerView,
 			'owner-view': OwnerView,
 			'customer-view': CustomerView,
+			'lc-icon': FaIcon,
 		};
 	}
 }
