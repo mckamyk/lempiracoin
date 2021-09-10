@@ -50,6 +50,11 @@ task('init', 'Initialized the contract state, and updates address reference', as
 const config: HardhatUserConfig = {
 	solidity: '0.8.4',
 	networks: {
+		rinkeby: {
+			url: 'https://eth-rinkeby.alchemyapi.io/v2/PveVnhbB-ISvPOPFxkdDb9YJpdXWc3xm',
+			// This is a dedicated Rinkeby wallet. Don't get any ideas.
+			accounts: ['0xafa2bcc292857e4e4ab380511485829f2d2b4f3c947e875ef8f0a661e3bfbc52'],
+		},
 		hardhat: {
 			forking: {
 				url: 'https://eth-mainnet.alchemyapi.io/v2/V0nBEYPNRBYaZmLGh9psiWwTDwGEXlk7',

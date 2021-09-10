@@ -1,5 +1,4 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import * as path from 'path';
 import * as webpack from 'webpack';
 import {Configuration} from 'webpack-dev-server';
 
@@ -8,7 +7,7 @@ interface Config extends webpack.Configuration {
 }
 
 const config: Config = {
-	mode: 'development',
+	mode: 'production',
 	entry: './src/gui/root.ts',
 
 	plugins: [
@@ -24,11 +23,6 @@ const config: Config = {
 
 	resolve: {
 		extensions: ['.ts', '.js', '.json'],
-		alias: {
-			'#components': path.resolve(__dirname, './src/gui/components'),
-			'#services': path.resolve(__dirname, './src/gui/services'),
-			'#artifacts': path.resolve(__dirname, './artifacts'),
-		},
 	},
 
 	watchOptions: {

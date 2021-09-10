@@ -4,12 +4,12 @@ import {ifDefined} from 'lit/directives/if-defined';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import {colors, fonts} from '../../styles';
 import {BigNumber, ethers} from 'ethers';
-import {deposit, withdraw} from '#services/lempira';
-import Button from '#components/button';
-import Card from '#components/card';
-import TextField from '#components/textfield';
+import {deposit, withdraw} from '../../services/lempira';
+import Button from '../../components/button';
+import Card from '../../components/card';
+import TextField from '../../components/textfield';
 import {connect} from 'pwa-helpers';
-import {store, RootState} from '#services/redux/store';
+import {store, RootState} from '../../services/redux/store';
 
 export default class ManagerView extends connect(store)(scope(LitElement)) {
 	@state() private totalSupply?: BigNumber;

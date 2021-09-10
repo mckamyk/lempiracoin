@@ -4,9 +4,9 @@ import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import NotConnected from './Views/notConnected';
 import {colors, fonts} from './styles';
 import {connect} from 'pwa-helpers';
-import {RootState, store} from '#services/redux/store';
+import {RootState, store} from './services/redux/store';
 import {faUsers, faHome, faMoneyBillWave} from '@fortawesome/free-solid-svg-icons';
-import FaIcon from '#components/faIcon';
+import FaIcon from './components/faIcon';
 import ManagerView from './Views/Manager/ManagerView';
 import OwnerView from './Views/Owner/OwnerView';
 import CustomerView from './Views/Customer/customerView';
@@ -55,6 +55,14 @@ export default class RootElement extends connect(store)(scope(LitElement)) {
 	}
 
 	render() {
+		if (!this.connected) {
+			return html`
+				<div class="wrapper">
+					<not-connected></not-connected>
+				</div>
+			`;
+		}
+
 		return html`
 			<div class="wrapper">
 				${this.showNav ? html`

@@ -36,13 +36,21 @@ const setupAccounts = (accounts: string[]) => {
 };
 
 const listenToAccounts = () => {
-	window.ethereum.on('accountsChanged', setupAccounts);
+	try {
+		window.ethereum.on('accountsChanged', setupAccounts);
+	} catch {
+		console.log('Ethereum not connected!');
+	}
 };
 
 const tryConnect = async () => {
-	const accounts = await window.ethereum.request({method: 'eth_accounts'}) as string[];
-	if (accounts.length) {
-		setupAccounts(accounts);
+	try {
+		const accounts = await window.ethereum.request({method: 'eth_accounts'}) as string[];
+		if (accounts.length) {
+			setupAccounts(accounts);
+		}
+	} catch {
+		console.log('Ethereum not connected!');
 	}
 };
 

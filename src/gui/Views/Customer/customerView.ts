@@ -2,7 +2,7 @@ import {LitElement, html, css} from 'lit';
 import {state} from 'lit/decorators.js';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
 import {connect} from 'pwa-helpers';
-import {RootState, store} from '#services/redux/store';
+import {RootState, store} from '../../services/redux/store';
 import Card from '../../components/card';
 import {BigNumber, ethers} from 'ethers';
 

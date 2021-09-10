@@ -5,7 +5,7 @@ import Card from '../../components/card';
 import TextField from '../../components/textfield';
 import Button from '../../components/button';
 import {connect} from 'pwa-helpers';
-import {store, RootState} from '#services/redux/store';
+import {store, RootState} from '../../services/redux/store';
 import {Manager} from '../../../managerType';
 import {toggleManager, addManager, removeManager} from '../../services/lempira';
 

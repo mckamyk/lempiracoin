@@ -1,5 +1,5 @@
 // @ts-ignore
-import lempira from '#artifacts/src/contracts/lempiracoin.sol/LempiraCoin.json';
+import lempira from '../../../artifacts/src/contracts/lempiracoin.sol/LempiraCoin.json';
 import {BigNumber, ethers} from 'ethers';
 // @ts-ignore
 import addr from '../../address';

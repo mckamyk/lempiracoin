@@ -1,6 +1,6 @@
 import {LitElement, html, css} from 'lit';
 import {ScopedElementsMixin as scope} from '@open-wc/scoped-elements';
-import {connect} from '#services/eth';
+import {connect} from '../services/eth';
 import Button from '../components/button';
 
 export default class NotConnected extends scope(LitElement) {
